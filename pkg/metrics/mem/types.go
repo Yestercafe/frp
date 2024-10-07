@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	ReserveDays = 7
+	ReserveDays = 30
 )
 
 type ServerStats struct {
