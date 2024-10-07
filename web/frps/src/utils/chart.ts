@@ -213,17 +213,27 @@ function DrawProxyTrafficChart(
   )
   myChart.showLoading()
 
-  trafficInArr = trafficInArr.reverse()
-  trafficOutArr = trafficOutArr.reverse()
+  // trafficInArr = trafficInArr.reverse()
+  // trafficOutArr = trafficOutArr.reverse()
   let now = new Date()
-  now = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 6)
+  now = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const dates: Array<string> = []
   for (let i = 0; i < 7; i++) {
     dates.push(
       now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate()
     )
-    now = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1)
+    now = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)
   }
+
+  var trafficOutSum = 0
+  for (const v of trafficOutArr) {
+    trafficOutSum += v
+  }
+  var trafficInSum = 0
+  for (const v of trafficInArr) {
+    trafficInSum += v
+  }
+
 
   const option = {
     tooltip: {
@@ -233,17 +243,17 @@ function DrawProxyTrafficChart(
       },
       formatter: function (data: any) {
         let html = ''
-        if (data.length > 0) {
-          html += data[0].name + '<br/>'
+        if (data[0].length > 0) {
+          html += data[0][0].name + '<br/>'
         }
-        for (const v of data) {
+        for (const v of data[0]) {
           const colorEl =
             '<span style="display:inline-block;margin-right:5px;' +
             'border-radius:10px;width:9px;height:9px;background-color:' +
             v.color +
             '"></span>'
           html +=
-            colorEl + v.seriesName + ': ' + Humanize.fileSize(v.value) + '<br/>'
+            colorEl + v.seriesName + ': ' + Humanize.fileSize(v.value) + ' &#47 ' + Humanize.fileSize(data[1]) + '<br/>'
         }
         return html
       },
@@ -277,12 +287,12 @@ function DrawProxyTrafficChart(
       {
         name: 'Traffic In',
         type: 'bar',
-        data: trafficInArr,
+        data: [trafficInArr, trafficInSum],
       },
       {
         name: 'Traffic Out',
         type: 'bar',
-        data: trafficOutArr,
+        data: [trafficOutArr, trafficOutSum],
       },
     ],
   }
