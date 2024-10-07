@@ -225,15 +225,15 @@ function DrawProxyTrafficChart(
     now = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)
   }
 
-  var trafficOutSum = 0
-  for (const v of trafficOutArr) {
-    trafficOutSum += v
-  }
-  var trafficInSum = 0
+  let trafficSum = {}
+  trafficSum['Traffic In'] = 0
   for (const v of trafficInArr) {
-    trafficInSum += v
+    trafficSum['Traffic In'] += v
   }
-
+  trafficSum['Traffic Out'] = 0
+  for (const v of trafficOutArr) {
+    trafficSum['Traffic Out'] += v
+  }
 
   const option = {
     tooltip: {
@@ -243,17 +243,18 @@ function DrawProxyTrafficChart(
       },
       formatter: function (data: any) {
         let html = ''
-        if (data[0].length > 0) {
-          html += data[0][0].name + '<br/>'
+        if (data.length > 0) {
+          html += data[0].name + '<br/>'
         }
-        for (const v of data[0]) {
+
+        for (const v of data) {
           const colorEl =
             '<span style="display:inline-block;margin-right:5px;' +
             'border-radius:10px;width:9px;height:9px;background-color:' +
             v.color +
             '"></span>'
           html +=
-            colorEl + v.seriesName + ': ' + Humanize.fileSize(v.value) + ' &#47 ' + Humanize.fileSize(data[1]) + '<br/>'
+            colorEl + v.seriesName + ': ' + Humanize.fileSize(v.value) + ' &#47 ' + Humanize.fileSize(trafficSum[v.seriesName]) + '<br/>'
         }
         return html
       },
@@ -287,12 +288,12 @@ function DrawProxyTrafficChart(
       {
         name: 'Traffic In',
         type: 'bar',
-        data: [trafficInArr, trafficInSum],
+        data: trafficInArr,
       },
       {
         name: 'Traffic Out',
         type: 'bar',
-        data: [trafficOutArr, trafficOutSum],
+        data: trafficOutSum,
       },
     ],
   }
