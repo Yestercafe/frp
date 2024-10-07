@@ -225,12 +225,13 @@ function DrawProxyTrafficChart(
     now = new Date(now.getFullYear(), now.getMonth(), now.getDate() - 1)
   }
 
-  let trafficSum = {}
-  trafficSum['Traffic In'] = 0
+  let trafficSum: { [id: string]: number } = {
+    'Traffic In': 0,
+    'Traffic Out': 0,
+  }
   for (const v of trafficInArr) {
     trafficSum['Traffic In'] += v
   }
-  trafficSum['Traffic Out'] = 0
   for (const v of trafficOutArr) {
     trafficSum['Traffic Out'] += v
   }
@@ -293,7 +294,7 @@ function DrawProxyTrafficChart(
       {
         name: 'Traffic Out',
         type: 'bar',
-        data: trafficOutSum,
+        data: trafficOutArr,
       },
     ],
   }
